@@ -6,7 +6,7 @@
 library(dplyr)
 
 #Basketball-Reference Data
-bref <- read.csv("bref.csv")
+bref <- read.csv("bref.csv", stringsAsFactors = FALSE)
 
 #Remove unwanted and duplicate columns
 bref$X <- NULL
@@ -25,9 +25,6 @@ trade <- bref %>%
 remove.rows <- c()
 
 for(i in 1:nrow(bref)){
-  if(i %in% values){
-    print(i)
-  }
   if(bref$Tm[i] != "TOT"){
     tmp <- trade %>%
       filter(Year == bref$Year[i])
@@ -39,5 +36,10 @@ for(i in 1:nrow(bref)){
 }
 
 PlayerValues <- bref[-remove.rows,]
+rownames(PlayerValues) <- 1:nrow(PlayerValues)
 
 #Remove bref username from player name
+PlayerValues$Player <- gsub("\\\\.*", "", PlayerValues$Player)
+PlayerValues$Player <- gsub("\\*.*", "", PlayerValues$Player)
+
+
